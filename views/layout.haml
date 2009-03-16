@@ -1,0 +1,34 @@
+!!!
+%html
+
+  %head
+    %meta{ :charset => 'utf-8' }
+    %meta{ :name => 'Description', :content => 'The personal website of Paul Annesley, a web developer living in Melbourne, Australia.' }
+    %title= title 'paul.annesley.cc', @subtitle
+    %link{ :rel => :alternate, :type => 'application/atom+xml', :title => 'Recent Blog Posts on paul.annesley.cc', :href => 'http://feeds.feedburner.com/paulannesley' }
+    %link{ :rel => :alternate, :type => 'application/rss+xml', :title => 'Recent del.icio.us Bookmarks', :href => 'http://del.icio.us/rss/paul.annesley' }
+    %link{ :rel => :stylesheet, :type => 'text/css', :href => '/static/style.css' }
+    %link{ :rel => 'openid.server', :href => 'http://www.myopenid.com/server' }
+    %link{ :rel => 'openid.delegate', :href => 'http://pda.myopenid.com/' }
+
+  %body
+
+    #header
+      %h1 paul.annesley.cc
+      %ul.navigation
+        %li
+          %a{ :href => '/' } Home
+        %li
+          %a{ :href => '/about' } About
+        %li
+          %a{ :href => '/articles' } Articles
+
+    = yield
+
+    #footer
+      %p &copy; 2007 &#8211; 2009 Paul Annesley
+
+    %script{ :src => 'http://www.google-analytics.com/urchin.js', :type => 'text/javascript' }
+    :javascript
+      _uacct = "UA-1080938-1";
+      urchinTracker();
