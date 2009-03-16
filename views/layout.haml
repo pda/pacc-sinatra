@@ -23,6 +23,29 @@
         %li
           %a{ :href => '/articles' } Articles
 
+    #column-container
+      #column1.column
+        .column-content
+          #profile
+            %h2 Profile
+            %p
+              %img{ :width => 73, :height => 73, :src => '/static/paul-annesley.jpg', :alt => 'Paul Annesley' }
+              This is the personal website of
+              <a rel="me" title="Home" class="name" href="/">Paul Annesley</a>,
+              senior developer at
+              <a href="http://99designs.com/">99designs</a>
+              in
+              <a title="Melbourne on Wikipedia" href="http://en.wikipedia.org/wiki/Melbourne">Melbourne, Australia</a>.
+              You can <a title="pda on Twitter" href="http://twitter.com/pda">follow Paul on Twitter</a>.
+          /
+            #bookmarks
+              %h2 Recent Bookmarks
+          #people
+            %h2 People
+            %ul
+              %li
+                %a.name{ :href => 'http://jamesannesley.com', :rel => 'sibling met' } James Annesley
+                » Maker and purveyor of fine jazz saxophone music in Melbourne, Australia
     = yield
 
     #footer
