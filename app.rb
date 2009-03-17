@@ -2,9 +2,11 @@
 
 require 'rubygems'
 require 'sinatra'
+require 'rfeedparser'
 
 get '/' do
   @subtitle = 'front page'
+  @bookmarks = FeedParser.parse('http://feeds.delicious.com/v2/rss/paul.annesley?count=8')
   haml :frontpage
 end
 

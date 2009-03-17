@@ -37,9 +37,15 @@
               in
               <a title="Melbourne on Wikipedia" href="http://en.wikipedia.org/wiki/Melbourne">Melbourne, Australia</a>.
               You can <a title="pda on Twitter" href="http://twitter.com/pda">follow Paul on Twitter</a>.
-          /
             #bookmarks
               %h2 Recent Bookmarks
+              %ul
+                - @bookmarks.entries.each do |entry|
+                  %li
+                    %a{ :href => entry.link }= entry.title
+                    %span.description
+                      &raquo;
+                      = entry.description
           #people
             %h2 People
             %ul
