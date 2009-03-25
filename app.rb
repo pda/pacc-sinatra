@@ -2,11 +2,15 @@
 
 require 'rubygems'
 require 'sinatra'
-require 'rfeedparser'
+require 'datastore'
+
+set :haml, :format => :html5
+
+cache = HttpDataStore.new 'http://localhost:1978/pacc/'
 
 get '/' do
   @subtitle = 'front page'
-  @bookmarks = FeedParser.parse('http://feeds.delicious.com/v2/rss/paul.annesley?count=8')
+  @bookmarks = cache.get('bookmarks')
   haml :frontpage
 end
 
@@ -15,9 +19,3 @@ helpers do
     @subtitle ? "#{subtitle} — #{title}" : title
   end
 end
-
-# TODO: better way to switch HAML to HTML5..?
-class Sinatra::Application
-  def self.haml; { :format => :html5 }; end
-end
-

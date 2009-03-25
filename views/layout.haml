@@ -40,12 +40,12 @@
             #bookmarks
               %h2 Recent Bookmarks
               %ul
-                - @bookmarks.entries.each do |entry|
+                - @bookmarks.each do |entry|
                   %li
-                    %a{ :href => entry.link }= entry.title
+                    %a{ :href => entry['link'] }= entry['title']
                     %span.description
                       &raquo;
-                      = entry.description
+                      = entry['summary']
           #people
             %h2 People
             %ul
