@@ -1,1 +1,8 @@
-
+#recent-posts
+  - @posts.each do |post|
+    .blogpost
+      %h2
+        %a{:href => '#'}= post['title']
+      %p.date= post['date']
+      .blogpost-description
+        ~ post['content']

@@ -4,6 +4,7 @@ require 'rubygems'
 require 'sinatra'
 require 'rfeedparser'
 require 'pacc/tokyotyrant'
+require 'pacc/couch'
 
 set :haml => { :format => :html5 },
   :datastore_url => 'http://localhost:1978/pacc/',
@@ -15,5 +16,6 @@ get '/' do
   @bookmarks = cache.get 'bookmarks' do
     FeedParser.parse(options.delicious_url)['entries']
   end
+  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts').rows
   haml :frontpage
 end
