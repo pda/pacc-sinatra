@@ -16,7 +16,14 @@ class HttpDataStore
   end
 
   def get(key)
-    JSON.parse(@client.get_content(@baseurl + key))
+    begin
+      JSON.parse(@client.get_content(@baseurl + key))
+    rescue HTTPClient::BadResponseError
+      raise DataStoreError
+    end
   end
 
+end
+
+class DataStoreError < StandardError
 end
