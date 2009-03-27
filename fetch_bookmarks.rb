@@ -2,8 +2,13 @@
 
 require 'rubygems'
 require 'rfeedparser'
-require 'datastore'
+require 'pacc/tokyotyrant'
 
-feed = FeedParser.parse('http://feeds.delicious.com/v2/rss/paul.annesley?count=8')
-cache = HttpDataStore.new('http://localhost:1978/pacc/')
-cache.set('bookmarks', feed['entries'])
+url = 'http://feeds.delicious.com/v2/rss/paul.annesley?count=8'
+cache = Pacc::TokyoTyrantCache.new('http://localhost:1978/pacc/')
+bookmarks = cache.set 'bookmarks', FeedParser.parse(url)['entries']
+
+puts "Fetched #{bookmarks.length} entries from delicious.com:"
+bookmarks.each do |entry|
+  puts " * #{entry['title']}"
+end

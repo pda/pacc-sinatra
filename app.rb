@@ -2,20 +2,18 @@
 
 require 'rubygems'
 require 'sinatra'
-require 'datastore'
+require 'rfeedparser'
+require 'pacc/tokyotyrant'
 
-set :haml, :format => :html5
-
-cache = HttpDataStore.new 'http://localhost:1978/pacc/'
+set :haml => { :format => :html5 },
+  :datastore_url => 'http://localhost:1978/pacc/',
+  :couchdb_url => 'http://localhost:5984/pacc',
+  :delicious_url => 'http://feeds.delicious.com/v2/rss/paul.annesley?count=8'
 
 get '/' do
-  @subtitle = 'front page'
-  @bookmarks = cache.get('bookmarks')
-  haml :frontpage
-end
-
-helpers do
-  def title(title, subtitle)
-    @subtitle ? "#{subtitle} — #{title}" : title
+  cache = Pacc::TokyoTyrantCache.new(options.datastore_url)
+  @bookmarks = cache.get 'bookmarks' do
+    FeedParser.parse(options.delicious_url)['entries']
   end
+  haml :frontpage
 end

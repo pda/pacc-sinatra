@@ -4,7 +4,7 @@
   %head
     %meta{ :charset => 'utf-8' }
     %meta{ :name => 'Description', :content => 'The personal website of Paul Annesley, a web developer living in Melbourne, Australia.' }
-    %title= title 'paul.annesley.cc', @subtitle
+    %title= (@subtitle ? @subtitle + ' &#8212; ' : '') + 'paul.annesley.cc'
     %link{ :rel => :alternate, :type => 'application/atom+xml', :title => 'Recent Blog Posts on paul.annesley.cc', :href => 'http://feeds.feedburner.com/paulannesley' }
     %link{ :rel => :alternate, :type => 'application/rss+xml', :title => 'Recent del.icio.us Bookmarks', :href => 'http://del.icio.us/rss/paul.annesley' }
     %link{ :rel => :stylesheet, :type => 'text/css', :href => '/static/style.css' }
@@ -52,7 +52,10 @@
               %li
                 %a.name{ :href => 'http://jamesannesley.com', :rel => 'sibling met' } James Annesley
                 » Maker and purveyor of fine jazz saxophone music in Melbourne, Australia
-    = yield
+
+      #column2.column
+        .column-content
+          = yield
 
     #footer
       %p &copy; 2007 &#8211; 2009 Paul Annesley
