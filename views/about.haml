@@ -1,0 +1,68 @@
+#about
+  %h2 About Paul Annesley and This Site
+
+  %p
+    This site is my personal blog and aggregation point, powered by all sorts of 
+    cool HTTP-speaking components including
+    Ruby, Sinatra, rFeedParser, CouchDB, Tokyo Tyrant, Thin, nginx and Varnish.
+    Previous incarnations of this site have been powered by PHP, and by Django/Python.
+
+  %p
+    I've worked with PHP5 (heavily object-oriented) since it was released,
+    and recently switched from Subversion to <a href="http://git.or.cz/">Git</a>,
+    which was a system shock but well worth it.
+    I've got a secret love for
+    <a href="http://www.ruby-lang.org/" title="Ruby Programming Language">Ruby</a>,
+    <a href="http://www.python.org/" title="Python Programming Language">Python</a> and
+    <a href="http://en.wikipedia.org/wiki/JavaScript" title="JavaScript - Wikipedia">JavaScript</a>,
+    as well as a secret hate for PHP, but I don't let that get in the way of
+    what needs to be done :)
+
+  #authored.list
+    %h2 Things I've Written Elsewhere
+    %ul
+      - @authored_elsewhere.each do |entry|
+        %li
+          %a{ :href => entry['link'] }= entry['title']
+
+  .list
+    %h2 Me, Elsewhere
+    %ul
+      %li
+        %a{ :href => 'http://github.com/pda', :title => 'pda at GitHub', :rel => 'me' } GitHub
+        %span.meta &raquo; pda
+      %li
+        %a{ :href => 'http://www.linkedin.com/in/paulannesley', :title => 'paulannesley on LinkedIn', :rel => 'me' } LinkedIn
+        %span.meta &raquo; paulannesley
+      %li
+        %a{ :href => 'http://twitter.com/pda', :title => 'pda on Twitter', :rel => 'me' } Twitter
+        %span.meta &raquo; pda
+      %li
+        %a{ :href => 'http://flickr.com/photos/paulannesley/', :title => 'paulannesley on Flickr', :rel => 'me' } Flickr
+        %span.meta &raquo; paulannesley
+      %li
+        %a{ :href => 'http://delicious.com/paul.annesley', :title => 'paul.annesley at Delicious', :rel => 'me' } Delicious
+        %span.meta &raquo; paul.annesley
+      %li
+        %a{ :href => 'http://99designs.com/people/paul', :title => 'Paul Annesley at 99designs', :rel => 'me' } 99designs
+        %span.meta &raquo; Paul Annesley
+
+  #announcements.list
+    %h2 Interesting Announcements
+    %ul
+      - @announced_elsewhere.each do |entry|
+        %li
+          %a{ :href => entry['link'] }= entry['title']
+          %span.meta
+            &raquo;
+            = feed_entry_date entry
+
+  #commented.list
+    %h2 Places I've Left Comments
+    %ul
+      - @commented.each do |entry|
+        %li
+          %a{ :href => entry['link'] }= entry['title']
+          %span.meta
+            &raquo;
+            = feed_entry_host entry
