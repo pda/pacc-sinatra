@@ -1,12 +1,8 @@
 #!/usr/bin/ruby
 
-require 'rubygems'
-require 'sinatra'
-require 'rfeedparser'
-require 'pacc/tokyotyrant'
-require 'pacc/couch'
-require 'uri'
-require 'time'
+def requires(list) list.each{ |r| require r } end
+requires %w{ rubygems sinatra rfeedparser uri time }
+requires %w{ pacc/tokyotyrant pacc/couch }
 
 set :haml => { :format => :html5 },
   :datastore_url => 'http://localhost:1978/pacc/',
