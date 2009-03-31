@@ -38,6 +38,15 @@ get '/about' do
   haml :about
 end
 
+get '/articles' do
+  cache = Pacc::TokyoTyrantCache.new(options.datastore_url)
+  @bookmarks = cache.get 'bookmarks' do
+    FeedParser.parse(options.delicious_url)['entries']
+  end
+  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts').rows
+  haml :articles
+end
+
 helpers do
   def feed_entry_host(entry) URI.parse(entry['link']).host end
   def feed_entry_date(entry) Time.mktime(*entry['updated_parsed'][0..7]).strftime('%d %B %Y') end

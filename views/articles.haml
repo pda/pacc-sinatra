@@ -1,0 +1,8 @@
+#article-archive
+  %h3 All Articles
+  %ol
+    - @posts.each do |post|
+      %li
+        %a{ :href => '#' }= post['title']
+        &raquo;
+        %span.date= post['date']
