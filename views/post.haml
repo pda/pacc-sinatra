@@ -1,0 +1,6 @@
+.singlepage-content
+  .blogpost
+    %h2.title= @post['title']
+    %p.date= nice_date @post['timecreated']
+    .content
+      ~ @post['content']

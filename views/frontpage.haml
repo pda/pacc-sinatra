@@ -2,7 +2,7 @@
   - @posts.each do |post|
     .blogpost
       %h2
-        %a{:href => '#'}= post['title']
-      %p.date= post['date']
+        %a{:href => link_to_post(post)}= post['title']
+      %p.date= nice_date post['timecreated']
       .blogpost-description
         ~ post['content']

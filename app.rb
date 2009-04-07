@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 def requires(list) list.each{ |r| require r } end
-requires %w{ rubygems sinatra rfeedparser uri time }
+requires %w{ rubygems sinatra rfeedparser uri date time }
 requires %w{ pacc/tokyotyrant pacc/couch }
 
 set :haml => { :format => :html5 },
@@ -17,7 +17,7 @@ get '/' do
   @bookmarks = cache.get 'bookmarks' do
     FeedParser.parse(options.delicious_url)['entries']
   end
-  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts').rows
+  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts',{:descending => 'true'}).rows
   haml :frontpage
 end
 
@@ -35,6 +35,7 @@ get '/about' do
   @commented = cache.get 'commented' do
     FeedParser.parse(options.commented_url)['entries'][0..9]
   end
+  @subtitle = 'About Paul Annesley and This Site'
   haml :about
 end
 
@@ -43,11 +44,37 @@ get '/articles' do
   @bookmarks = cache.get 'bookmarks' do
     FeedParser.parse(options.delicious_url)['entries']
   end
-  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts').rows
+  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts',{:descending => true}).rows
+  @subtitle = 'Article Archive'
   haml :articles
 end
 
+get '/articles/*/*/*' do
+  cache = Pacc::TokyoTyrantCache.new(options.datastore_url)
+  @bookmarks = cache.get 'bookmarks' do
+    FeedParser.parse(options.delicious_url)['entries']
+  end
+  @post = Pacc::Couch.new(options.couchdb_url).get('%04d-%02d-%s' % params['splat'])
+  haml :post
+end
+
 helpers do
-  def feed_entry_host(entry) URI.parse(entry['link']).host end
-  def feed_entry_date(entry) Time.mktime(*entry['updated_parsed'][0..7]).strftime('%d %B %Y') end
+
+  def feed_entry_host(entry)
+    URI.parse(entry['link']).host
+  end
+
+  def feed_entry_date(entry)
+    Time.mktime(*entry['updated_parsed'][0..7]).strftime('%d %B %Y')
+  end
+
+  def nice_date(datestring)
+    DateTime.parse(datestring).strftime('%d %B %Y')
+  end
+
+  def link_to_post(post)
+    date = DateTime.parse(post['timecreated'])
+    "/articles/%04d/%02d/%s" % [ date.year, date.month, post['slug'] ]
+  end
+
 end
