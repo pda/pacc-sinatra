@@ -54,7 +54,13 @@ get '/articles/*/*/*' do
   @bookmarks = cache.get 'bookmarks' do
     FeedParser.parse(options.delicious_url)['entries']
   end
-  @post = Pacc::Couch.new(options.couchdb_url).get('%04d-%02d-%s' % params['splat'])
+  couch = Pacc::Couch.new(options.couchdb_url)
+  @post = couch.get('%04d-%02d-%s' % params['splat'])
+  key_template = '["%s","%%s"]' % @post['_id']
+  @comments = couch.view('blog/comments', {
+    :startkey => URI.escape(key_template % 0),
+    :endkey => URI.escape(key_template % 'ZZZZZ') # should be '\u9999' ?
+  }).rows
   haml :post
 end
 
