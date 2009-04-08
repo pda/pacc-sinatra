@@ -19,14 +19,18 @@ class Couch
     decode(@client.get_content(url(id)))
   end
 
-  def put(id, data)
+  def put(id, document)
     url = url(id)
-    r = @client.put(url, encode(data))
+    r = @client.put(url, encode(document))
     # TODO: better handling - actually, rewrite this whole class
-	unless r.status_code == 201
+    unless r.status_code == 201
       puts r.inspect
       raise "HTTP error #{r.status_code} #{r.header.reason_phrase} from PUT #{url}" unless r.status_code == 200
-	end
+    end
+  end
+
+  def post(document)
+    @client.post(@baseurl, encode(document))
   end
 
   def delete(id, revision)
