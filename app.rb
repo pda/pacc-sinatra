@@ -22,23 +22,25 @@ end
 
 get '/articles/feed' do
   @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts', { :descending => 'true' }).rows[0..9]
-  Atom::Feed.new { |f|
+  feed = Atom::Feed.new { |f|
     f.title = 'paul.annesley.cc'
     f.id = 'http://paul.annesley.cc/'
     f.links << Atom::Link.new(:href => absolute_url('/feed'), :rel => 'self')
     f.links << Atom::Link.new(:href => absolute_url('/'), :rel => 'alternate')
     f.authors << Atom::Person.new(:name => 'Paul Annesley', :uri => 'http://paul.annesley.cc/')
-	f.updated = Time.parse(@posts.first['timemodified'])
+	f.updated = Time.parse(@posts.first['timemodified']).gmtime
     @posts.each do |post|
       f.entries << Atom::Entry.new do |e|
         e.id = post['uid']
-        e.updated = Time.parse(post['timemodified'])
+        e.updated = Time.parse(post['timemodified']).gmtime
         e.title = post['title']
         e.links << Atom::Link.new(:href => absolute_url(link_to_post(post)), :rel => 'alternate')
         e.content = Atom::Content::Html.new(post['content'])
       end
     end
-  }.to_xml
+  }
+  content_type :atom, :charset => :utf8
+  feed.to_xml
 end
 
 get '/about' do
