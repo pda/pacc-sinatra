@@ -22,6 +22,7 @@ Gems:
     * hoe
     * launchy
   * httpclient
+  * ratom
 
 ... plus more gems?
 

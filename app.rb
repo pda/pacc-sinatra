@@ -1,8 +1,7 @@
 #!/usr/bin/ruby
 
 def requires(list) list.each{ |r| require r } end
-requires %w{ rubygems sinatra rfeedparser uri date time }
-requires %w{ pacc/tokyotyrant pacc/couch }
+requires %w{ rubygems xml/libxml rfeedparser atom uri date time pacc/tokyotyrant pacc/couch sinatra }
 
 set :haml => { :format => :html5 },
   :datastore_url => 'http://localhost:1978/pacc/',
@@ -19,6 +18,27 @@ get '/' do
   end
   @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts',{:descending => 'true'}).rows
   haml :frontpage
+end
+
+get '/articles/feed' do
+  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts', { :descending => 'true' }).rows[0..9]
+  Atom::Feed.new { |f|
+    f.title = 'paul.annesley.cc'
+    f.id = 'http://paul.annesley.cc/'
+    f.links << Atom::Link.new(:href => absolute_url('/feed'), :rel => 'self')
+    f.links << Atom::Link.new(:href => absolute_url('/'), :rel => 'alternate')
+    f.authors << Atom::Person.new(:name => 'Paul Annesley', :uri => 'http://paul.annesley.cc/')
+	f.updated = Time.parse(@posts.first['timemodified'])
+    @posts.each do |post|
+      f.entries << Atom::Entry.new do |e|
+        e.id = post['uid']
+        e.updated = Time.parse(post['timemodified'])
+        e.title = post['title']
+        e.links << Atom::Link.new(:href => absolute_url(link_to_post(post)), :rel => 'alternate')
+        e.content = Atom::Content::Html.new(post['content'])
+      end
+    end
+  }.to_xml
 end
 
 get '/about' do
@@ -64,6 +84,10 @@ get '/articles/*/*/*' do
   haml :post
 end
 
+['/feed', '/feed/', '/feed/atom', '/feed/atom/', '/articles/feed/'].each do |legacy_url|
+  get legacy_url do redirect '/articles/feed', 301 end
+end
+
 helpers do
 
   def feed_entry_host(entry)
@@ -81,6 +105,10 @@ helpers do
   def link_to_post(post)
     date = DateTime.parse(post['timecreated'])
     "/articles/%04d/%02d/%s" % [ date.year, date.month, post['slug'] ]
+  end
+
+  def absolute_url(host_relative)
+    'http://paul.annesley.cc' + host_relative
   end
 
 end
