@@ -82,7 +82,9 @@ get '/articles/*/*/*' do
     FeedParser.parse(options.delicious_url)['entries']
   end
   couch = Pacc::Couch.new(options.couchdb_url)
-  @post = couch.get('%04d-%02d-%s' % params['splat'])
+  # TODO: catch CouchDB 404, rethrow for Sinatra 404.
+  # TODO: validate parameters.
+  @post = couch.get('%s-%s-%s' % params['splat'])
   key_template = '["%s","%%s"]' % @post['_id']
   @comments = couch.view('blog/comments', {
     :startkey => URI.escape(key_template % 0),
