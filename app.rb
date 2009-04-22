@@ -71,6 +71,11 @@ get '/articles' do
   haml :articles
 end
 
+get '/articles/*/*/*/*' do
+  url = '/articles/%04d/%02d/%s' % params['splat'].values_at(0,1,3)
+  redirect url, 301
+end
+
 get '/articles/*/*/*' do
   cache = Pacc::TokyoTyrantCache.new(options.datastore_url)
   @bookmarks = cache.get 'bookmarks' do
