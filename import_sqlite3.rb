@@ -5,6 +5,8 @@ require 'pacc/couch'
 require 'sqlite3'
 require 'time'
 
+DATE_FORMAT = '%Y/%m/%d %H:%M:%S %z'
+
 couch = Pacc::Couch.new('http://localhost:5984/pacc')
 
 sqlite = SQLite3::Database.new('tmp/pdawebsite.sqlite3')
@@ -19,8 +21,8 @@ end
 puts "Importing blog posts..."
 post_id_map = {}
 sqlite.execute 'SELECT * FROM blog_blogpost ORDER BY timecreated' do |row|
-  created = DateTime.parse(row['timecreated'])
-  modified = DateTime.parse(row['timemodified'])
+  created = Time.parse(row['timecreated'])
+  modified = Time.parse('%s GMT' % row['timecreated'])
   id = "%04d-%02d-%s" % [ created.year, created.month, row['slug'] ]
   post_id_map[row['id']] = id
   puts "Importing blogpost #{id} - #{row['title']}"
@@ -29,8 +31,8 @@ sqlite.execute 'SELECT * FROM blog_blogpost ORDER BY timecreated' do |row|
     :slug => row['slug'],
     :uid => row['uid'],
     :title => row['title'],
-    :timecreated => created.strftime('%Y/%m/%d %H:%M:%S %z'),
-    :timemodified => modified.strftime('%Y/%m/%d %H:%M:%S %z'),
+    :timecreated => created.strftime(DATE_FORMAT),
+    :timemodified => modified.strftime(DATE_FORMAT),
     :content => row['content'],
     :commentable => row['allowcomments'],
   }
@@ -46,13 +48,13 @@ end
 
 puts "Importing comments..."
 sqlite.execute 'SELECT * FROM blog_blogpostcomment WHERE approved = 1 ORDER BY id' do |row|
-  created = DateTime.parse(row['timecreated'])
+  created = Time.parse(row['timecreated'])
   row['post_id'] = post_id_map[row['blogpost_id']]
   puts "Importing comment #%s re %s by %s on %s" % row.values_at('id','post_id','authorname','timecreated')
   document = {
     :type => 'blogpostcomment',
     :blogpost_id => row['post_id'],
-    :timecreated => created.strftime('%Y/%m/%d %H:%M:%S %z'),
+    :timecreated => created.strftime(DATE_FORMAT),
     :authorname => row['authorname'],
     :authoremail => row['authoremail'],
     :authorurl => row['authorurl'],
