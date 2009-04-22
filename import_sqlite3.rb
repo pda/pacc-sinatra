@@ -10,13 +10,13 @@ couch = Pacc::Couch.new('http://localhost:5984/pacc')
 sqlite = SQLite3::Database.new('tmp/pdawebsite.sqlite3')
 sqlite.results_as_hash = true
 
-# delete existing posts from CouchDB
+puts "Deleting existing posts from CouchDB..."
 couch.view('blog/posts').rows.each do |row|
   puts "Deleting blogpost #{row['_id']} - #{row['title']}"
   couch.delete row['_id'], row['_rev']
 end
 
-# import blog posts
+puts "Importing blog posts..."
 post_id_map = {}
 sqlite.execute 'SELECT * FROM blog_blogpost ORDER BY timecreated' do |row|
   created = DateTime.parse(row['timecreated'])
@@ -27,6 +27,7 @@ sqlite.execute 'SELECT * FROM blog_blogpost ORDER BY timecreated' do |row|
   document = {
     :type => 'blogpost',
     :slug => row['slug'],
+    :uid => row['uid'],
     :title => row['title'],
     :timecreated => created.strftime('%Y/%m/%d %H:%M:%S %z'),
     :timemodified => modified.strftime('%Y/%m/%d %H:%M:%S %z'),
@@ -36,12 +37,14 @@ sqlite.execute 'SELECT * FROM blog_blogpost ORDER BY timecreated' do |row|
   couch.put(id, document)
 end
 
+puts "Deleting Comments..."
 # delete existing comments from CouchDB
-couch.view('blog/allcomments').rows.each do |row|
+couch.view('blog/all_comments').rows.each do |row|
   puts "Deleting comment #{row['_id']} by #{row['authorname']} from #{row['timecreated']}"
   couch.delete row['_id'], row['_rev']
 end
 
+puts "Importing comments..."
 sqlite.execute 'SELECT * FROM blog_blogpostcomment WHERE approved = 1 ORDER BY id' do |row|
   created = DateTime.parse(row['timecreated'])
   row['post_id'] = post_id_map[row['blogpost_id']]
