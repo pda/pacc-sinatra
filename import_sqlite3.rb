@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+# aptitude install libsqlite3-ruby
+
 require 'rubygems'
 require 'pacc/couch'
 require 'sqlite3'
