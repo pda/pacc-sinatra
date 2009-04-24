@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <development|production>"
+  exit 1
+fi
+
+mkdir -p var
+
+sed -e "s#{APP_PATH}#`pwd`#" -e "s#{ENVIRONMENT}#$1#" \
+  < config-template.yml \
+  > config.yml

@@ -1,0 +1,14 @@
+---
+  environment: {ENVIRONMENT}
+  chdir: {APP_PATH}
+  address: 127.0.0.1
+  port: 4567
+  user: root
+  group: root
+  pid: {APP_PATH}/var/thin.pid
+  log: {APP_PATH}/var/thin.log
+  rackup: {APP_PATH}/config.ru
+  max_conns: 128
+  timeout: 30
+  max_persistent_conns: 32
+  daemonize: true
