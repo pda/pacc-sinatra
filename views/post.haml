@@ -4,15 +4,16 @@
     %p.date= nice_date @post['timecreated']
     .content
       ~ @post['content']
-  #comments
-    %h3 Comments
-    %p= "This post has #{@comments.count} comments."
-    %ol
-      - @comments.each do |comment|
-        %li
-          %p.date= nice_date comment['timecreated']
-          %p.byline
-            %cite= comment['authorname']
-            says:
-          .content
-            %p= comment['content'].gsub(/\n/, '<br>')
+  - unless @comments.empty?
+    #comments
+      %h3 Comments
+      %p= "This post has #{@comments.count} comments."
+      %ol
+        - @comments.each do |comment|
+          %li
+            %p.date= nice_date comment['timecreated']
+            %p.byline
+              %cite= comment['authorname']
+              says:
+            .content
+              %p= comment['content'].gsub(/\n/, '<br>')
