@@ -39,7 +39,7 @@ get '/articles/feed' do
       end
     end
   }
-  content_type :atom, :charset => :utf8
+  content_type :atom, :charset => 'utf-8'
   feed.to_xml
 end
 
@@ -84,7 +84,11 @@ get '/articles/*/*/*' do
   couch = Pacc::Couch.new(options.couchdb_url)
   # TODO: catch CouchDB 404, rethrow for Sinatra 404.
   # TODO: validate parameters.
-  @post = couch.get('%s-%s-%s' % params['splat'])
+  begin
+    @post = couch.get('%s-%s-%s' % params['splat'])
+  rescue HTTPClient::BadResponseError
+    raise Sinatra::NotFound
+  end
   key_template = '["%s","%%s"]' % @post['_id']
   @comments = couch.view('blog/comments', {
     :startkey => URI.escape(key_template % 0),
