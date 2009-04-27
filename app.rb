@@ -16,7 +16,7 @@ get '/' do
   @bookmarks = cache.get 'bookmarks' do
     FeedParser.parse(options.delicious_url)['entries']
   end
-  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts',{:descending => 'true'}).rows
+  @posts = Pacc::Couch.new(options.couchdb_url).view('blog/posts',{:descending => 'true'}).rows[0..9]
   haml :frontpage
 end
 
