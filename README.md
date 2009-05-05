@@ -3,7 +3,7 @@ paul.annesley.cc
 
 Ruby / Sinatra implementation of paul.annesley.cc
 
-Status: work in progress.
+Status: in production, prototype-quality code ;)
 
 Dependencies
 ------------
@@ -17,12 +17,14 @@ Gems:
     * haml
   * rfeedparser
     * hpricot-0.6
-    * rpec
+    * rspec
     * cucumber
     * hoe
     * launchy
   * httpclient
   * ratom
+  * json
+  * rake
 
 ... plus more gems?
 
