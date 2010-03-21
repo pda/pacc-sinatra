@@ -3,6 +3,6 @@
   %ol
     - @posts.each do |post|
       %li
-        %a{ :href => '#' }= post['title']
+        %a{ :href => link_to_post post }= post['title']
         &raquo;
         %span.date= nice_date post['timecreated']
